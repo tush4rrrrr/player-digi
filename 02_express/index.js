@@ -1,13 +1,16 @@
+import 'dotenv/config'; 
 import express from 'express';
 
 const app = express();
-const port = 3000;
+const port = procress.env.PORT || 3000;
 
 app.use(express.json());
 let playerData = [];  //an array to store the data
 let nextID = 1;  //an ID for reference purpose
 
-//add anew player
+//CRUD application
+
+//add anew player(C)
 app.post('/players', (req, res) => {
     const {name, number} = req.body;  //extracting data from request in a raw body in the json format
     const newPlayer = {id : nextID, name, number}  //creating an object
@@ -15,12 +18,12 @@ app.post('/players', (req, res) => {
     res.status(201).send(newPlayer);  //responding with the status and the actual data
 })
 
-//list all the players
+//list all the players(R)
 app.get('/players', (req, res) => {
     res.status(200).send(playerData);
 })
 
-//get a single player with id
+//get a single player with id(R)
 app.get('/players/:id', (req, res) => {
     const player = playerData.find(p =>p.id === parseInt(req.params.id));
     if(!player){
@@ -31,7 +34,7 @@ app.get('/players/:id', (req, res) => {
     }
 })
 
-//updation
+//updation(U)
 app.put('/player/:id', (req,res) => {
     //finding the id
      const player_id = playerData.find(p => p.id === parseInt(req.params.id));
@@ -46,8 +49,10 @@ app.put('/player/:id', (req,res) => {
      }
 })
 
-//delete player
+//delete player(D)
 app.delete('/player/:id', (req,res) => {
+    console.log("delete");
+    console.log(req.params.id);
     const idx = playerData.findIndex(p => p.id === parseInt(req.params.id))
     if(idx === -1){
         return res.status(404).send('Player not found');
